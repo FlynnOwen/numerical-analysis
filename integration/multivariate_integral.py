@@ -2,7 +2,6 @@
 Integrating with n > 3 variates.
 """
 from scipy import integrate
-import numpy as np
 
 from fixed_order_integrals import Bounds
 
