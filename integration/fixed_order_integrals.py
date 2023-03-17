@@ -62,6 +62,38 @@ def integral_bi_1():
     print(res)
 
 
+def function3(x, y, z):
+    """
+    A trivariate function to integrate defined as:
+    f(x, y, z) = 2x + 2y + 2z + 8xyz
+    Integral should be:
+    f'x(x, y, z) = x^2 + 2xy + 2xz + 4yzx^2
+    f'xy(x, y, z) = x^2y + x^2y + 2xyz + 2zx^2y^2
+    f'xyz(x, y, z) = x^2yz + x^2yz + xyz^2 + x^2y^2z^2
+    """
+    return 2*x + 2*y + 2*z + 8*x*y*z
+
+
+def integral_tri_1():
+    """
+    Analytical evaluation:
+    f'(x ,y, z) = (2 + 2 + 4 + 4) - (0) = 12
+    """
+    x_bounds = Bounds(0, 1)
+    y_bounds = Bounds(0, 1)
+    z_bounds = Bounds(0, 2)
+    res = integrate.tplquad(function3,
+                            x_bounds.lower,
+                            x_bounds.upper,
+                            y_bounds.lower,
+                            y_bounds.upper,
+                            z_bounds.lower,
+                            z_bounds.upper)
+
+    print(res)
+
+
 if __name__ == '__main__':
     integral_uni_1()
     integral_bi_1()
+    integral_tri_1()
