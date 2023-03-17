@@ -1,5 +1,5 @@
 # optimization
-Playing around with optmization problems.
+Playing around with problems related to numerical analysis.
 
 
 ## Reference
