@@ -15,9 +15,6 @@ def function2(z):
     """
     Bivariate function optimization.
     f(x,y) = x^2 + 2y^2 - (x + y)
-    Minimum at (x,y) = (0.5, 0.25).
-    Lower bounds defined at (0.75, 0.5) should mean
-    new minimum at (x,y) = (0.75, 0.5)
     """
     x, y = z
     return x**2 + 2 * y**2 - (x + y)
@@ -27,6 +24,10 @@ def min_multivariate_bounds():
     """
     Multivariate optimization of multivariate function,
     with variable bounds.
+
+    Minimum at (x,y) = (0.5, 0.25).
+    Lower bounds defined at (0.75, 0.5) should mean
+    new minimum at (x,y) = (0.75, 0.5)
     """
     x0 = (1, 1)
     bounds = Bounds([0.75, 0.5], [2, 3])
