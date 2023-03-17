@@ -8,12 +8,7 @@ Example constraints might be:
 - Linearity
 """
 import numpy as np
-from scipy.optimize import (
-    minimize, 
-    Bounds,
-    LinearConstraint,
-    NonlinearConstraint
-)
+from scipy.optimize import minimize, Bounds, LinearConstraint, NonlinearConstraint
 
 
 def function2(z):
@@ -25,20 +20,19 @@ def function2(z):
     new minimum at (x,y) = (0.75, 0.5)
     """
     x, y = z
-    return x**2 + 2*y**2 - (x + y)
+    return x**2 + 2 * y**2 - (x + y)
 
 
 def min_multivariate_bounds():
     """
-    Multivariate optimization of multivariate function, 
+    Multivariate optimization of multivariate function,
     with variable bounds.
     """
     x0 = (1, 1)
     bounds = Bounds([0.75, 0.5], [2, 3])
-    res_multi_min = minimize(function2, x0, 
-                             options={'disp': True},
-                             method='Nelder-Mead',
-                             bounds=bounds)
+    res_multi_min = minimize(
+        function2, x0, options={"disp": True}, method="Nelder-Mead", bounds=bounds
+    )
 
     print(res_multi_min)
 
@@ -54,10 +48,13 @@ def min_multivariate_lin_conts():
     linear_constraint = LinearConstraint([[1, 2], [2, 1]], [-np.inf, 1], [1, 1])
     x0 = (1, 1)
 
-    res_multi_min = minimize(function2, x0, 
-                             options={'disp': True},
-                             method='trust-constr',  # Optimization method that allows constraints
-                             constraints=linear_constraint)
+    res_multi_min = minimize(
+        function2,
+        x0,
+        options={"disp": True},
+        method="trust-constr",  # Optimization method that allows constraints
+        constraints=linear_constraint,
+    )
 
     print(res_multi_min)
 
@@ -71,33 +68,40 @@ def min_multivariate_nonlin_conts():
     x^2 - y <= 1
 
     These must be defined as:
-    - A function 
+    - A function
     - A Jacobian (first order derivative)
     - A combination  of Hessians (second order derivatives)
     """
 
     def cons_f(x):
-        return [x[0]**2 + x[1], x[0]**2 - x[1]]
+        return [x[0] ** 2 + x[1], x[0] ** 2 - x[1]]
+
     def cons_J(x):
-        return [[2*x[0], 1], [2*x[0], -1]]
+        return [[2 * x[0], 1], [2 * x[0], -1]]
+
     def cons_H(x, v):
-        return v[0]*np.array([[2, 0], [0, 0]]) + v[1]*np.array([[2, 0], [0, 0]])
-    
-    nonlinear_constraint = NonlinearConstraint(cons_f, [-np.inf, -np.inf], [1, 1], jac=cons_J, hess=cons_H)
+        return v[0] * np.array([[2, 0], [0, 0]]) + v[1] * np.array([[2, 0], [0, 0]])
+
+    nonlinear_constraint = NonlinearConstraint(
+        cons_f, [-np.inf, -np.inf], [1, 1], jac=cons_J, hess=cons_H
+    )
     # Option to instead approximate the Hessian using finite differences: hess='2-point'
     # Jacobian can also be approximated using finite differences: jac='2-point', hess=BFGS()
 
     x0 = (1, 1)
 
-    res_multi_min = minimize(function2, x0, 
-                             options={'disp': True},
-                             method='trust-constr',  # Optimization method that allows constraints
-                             constraints=nonlinear_constraint)
+    res_multi_min = minimize(
+        function2,
+        x0,
+        options={"disp": True},
+        method="trust-constr",  # Optimization method that allows constraints
+        constraints=nonlinear_constraint,
+    )
 
     print(res_multi_min)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     min_multivariate_bounds()
     min_multivariate_lin_conts()
     min_multivariate_nonlin_conts()
