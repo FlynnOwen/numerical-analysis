@@ -19,11 +19,13 @@ class LinearRegression:
                             for i in range(len(yhat))]
         return sum(absolute_epsilon)/len(absolute_epsilon)
 
-    def _linear_regression(self, beta):
-        weighted_data = [beta * i for i in self.x_data]
+    def _linear_regression(self, coeffs):
+        alpha = coeffs[0]
+        beta = coeffs[1]
+        weighted_data = [alpha + (beta * i) for i in self.x_data]
         return self._mae(self.y_data, weighted_data)
 
-    def fit(self, starting_value: tuple[int] = (1,)):
+    def fit(self, starting_value: tuple[int] = (1, 1)):
         fitted_model = minimize(
             self._linear_regression,
             starting_value,
@@ -32,10 +34,12 @@ class LinearRegression:
         )
 
         self.model = fitted_model
-        self.coeff = fitted_model.x[0]
+        self.coeff = fitted_model.x
 
     def predict(self, x_observed: List):
-        return [i*self.coeff for i in x_observed]
+        alpha = self.coeff[0]
+        beta = self.coeff[1]
+        return [alpha + (i*beta) for i in x_observed]
 
 
 if __name__ == '__main__':
