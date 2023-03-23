@@ -2,7 +2,6 @@
 Maximum-Likelihood in the form of a numerical
 optimization function.
 """
-from typing import List
 from abc import ABC, abstractmethod
 import math
 
@@ -88,7 +87,6 @@ class BernoulliMLE(MaximumLikelihoodEstimatorBase):
     
 
 class BinomialMLE(MaximumLikelihoodEstimatorBase):
-    # https://www.analyticsvidhya.com/blog/2022/02/decoding-logistic-regression-using-mle/
     def __init__(self, x_data, y_data, n_trials):
         self.x_data = x_data
         self.y_data = y_data
@@ -103,6 +101,8 @@ class BinomialMLE(MaximumLikelihoodEstimatorBase):
         return - (sum([np.log(math.comb(self.n_trials, i)) for i in self.y_data]) + np.log(p)*sum(self.y_data) + np.log(1 - p)*(n*self.n_trials - sum(self.y_data)))
     
     def mle_regression(self, coeffs: tuple):
+        """ Note: This likely isn't working
+        """
         alpha = coeffs[0]
         beta = coeffs[1]
 
