@@ -3,12 +3,13 @@ Funcitons related to the field of statistics written as
 numerical functions to be minimzed by scipy.
 """
 from typing import List
+from abc import ABC, abstractmethod
 
 from scipy.optimize import minimize
 import numpy as np
 
 
-class AutoRegressionOrder1:
+class TimeSeriesModel(ABC):
     def __init__(self, training_data: List):
         self.training_data = training_data
         self.model = None
@@ -30,21 +31,16 @@ class AutoRegressionOrder1:
                             for i in range(1, len(yhat))]
         return sum(absolute_epsilon)/len(absolute_epsilon)
 
-    def _ar_order_1(self, rho):
-        """Trains an order 1 auto-regressive model.
+    @abstractmethod
+    def time_series_model(self, coeffs: tuple):
+        pass
 
-        Args:
-            rho (int): coefficient for auto-regressive parameter.
-        """
-        weighted_data = [rho * i for i in self.training_data]
-        return self._mae_ar(self.training_data, weighted_data)
-
-    def fit(self, starting_value: int = 1):
+    def fit_model(self, starting_value: int = 1):
         """
         Multivariate optimization of multivariate function.
         """
         fitted_model = minimize(
-            self._ar_order_1,
+            self.time_series_model,
             starting_value,
             options={"disp": True},
             method="Nelder-Mead"
@@ -52,6 +48,28 @@ class AutoRegressionOrder1:
 
         self.model = fitted_model
         self.coeff = fitted_model.x
+
+    @abstractmethod
+    def predict(self, horizon):
+        """
+        Generates predicted future values.
+        """
+        pass
+
+
+class AutoRegressionOrder1(TimeSeriesModel):
+    def __init__(self, training_data: List):
+        self.training_data = training_data
+        self.model = None
+
+    def time_series_model(self, rho):
+        """Trains an order 1 auto-regressive model.
+
+        Args:
+            rho (int): coefficient for auto-regressive parameter.
+        """
+        weighted_data = [rho * i for i in self.training_data]
+        return self._mae_ar(self.training_data, weighted_data)
 
     def predict(self, horizon):
         """
@@ -68,7 +86,7 @@ class AutoRegressionOrder1:
 
 if __name__ == '__main__':
     ar = AutoRegressionOrder1([1, 2, 3, 4, 5, 6, 7, 8, 9])
-    ar.fit()
+    ar.fit_model()
 
     print(ar.model)
     print(ar.predict(5))
