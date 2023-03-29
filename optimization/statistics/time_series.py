@@ -82,6 +82,38 @@ class AutoRegressionOrder1(TimeSeriesModel):
             predicted_values.append(max_value)
 
         return predicted_values
+    
+
+class MovingAverageOrder1(TimeSeriesModel):
+    def __init__(self, training_data: List):
+        self.training_data = training_data
+        self.model = None
+        self.epsilon = np.random.normal(0, 1, len(self.training_data))
+
+    def time_series_model(self, theta: int):
+        """Trains an order 1 moving average model.
+
+        Args:
+            theta (int): coefficient for auto-regressive parameter.
+        """
+        mu = np.mean(self.training_data)
+        weighted_data = [mu + (theta * self.epsilon[i - 1]) + self.epsilon[i] 
+                         for i in range(1, len(self.training_data))]
+        return self._mae_ar(self.training_data, weighted_data)
+
+    def predict(self, horizon):
+        """
+        Generates predicted future values.
+        """
+        epsilons = [self.epsilon[-1]] + np.random.normal(0, 1, horizon + 1)
+        mu = np.mean(self.training_data)
+        theta = self.coeff
+        predicted_values = []
+
+        for i in range(horizon):
+            predicted_values.append(mu + theta*epsilons[i] + epsilons[i + 1])
+
+        return predicted_values
 
 
 if __name__ == '__main__':
@@ -90,3 +122,9 @@ if __name__ == '__main__':
 
     print(ar.model)
     print(ar.predict(5))
+
+    ma = MovingAverageOrder1([1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3])
+    ma.fit_model()
+    
+    print(ma.model)
+    print(ma.predict(5))
