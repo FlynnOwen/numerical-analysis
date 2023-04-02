@@ -7,7 +7,7 @@ Something not quite right with the log-likelihood.
 """
 
 import numpy as np
-from scipy.optimize import minimize, Bounds, LinearConstraint
+from scipy.optimize import minimize, LinearConstraint
 
 
 class GaussianMixtureModel:
