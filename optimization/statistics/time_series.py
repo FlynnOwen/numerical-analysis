@@ -17,7 +17,7 @@ class TimeSeriesModel(ABC):
     @staticmethod
     def _mae_ar(y: List, yhat: List):
         """
-        Calculate the mean absolute error, 
+        Calculate the mean absolute error,
         given predicted and actual values.
 
         Args:
@@ -27,9 +27,8 @@ class TimeSeriesModel(ABC):
         Returns:
             mae: mean absolute error
         """
-        absolute_epsilon = [np.abs(y[i] - yhat[i - 1])
-                            for i in range(1, len(yhat))]
-        return sum(absolute_epsilon)/len(absolute_epsilon)
+        absolute_epsilon = [np.abs(y[i] - yhat[i - 1]) for i in range(1, len(yhat))]
+        return sum(absolute_epsilon) / len(absolute_epsilon)
 
     @abstractmethod
     def time_series_model(self, coeffs: tuple):
@@ -43,7 +42,7 @@ class TimeSeriesModel(ABC):
             self.time_series_model,
             starting_value,
             options={"disp": True},
-            method="Nelder-Mead"
+            method="Nelder-Mead",
         )
 
         self.model = fitted_model
@@ -84,7 +83,7 @@ class AutoRegressionOrder1(TimeSeriesModel):
         return predicted_values
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     ar = AutoRegressionOrder1([1, 2, 3, 4, 5, 6, 7, 8, 9])
     ar.fit_model()
 
