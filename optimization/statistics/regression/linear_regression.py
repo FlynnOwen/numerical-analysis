@@ -5,7 +5,7 @@ optimization function.
 from typing import List
 
 from scipy.optimize import minimize
-import numpy as np
+from optimization.statistics.regression import utils
 
 
 class LinearRegression:
@@ -14,16 +14,11 @@ class LinearRegression:
         self.y_data = y_data
         self.model = None
 
-    @staticmethod
-    def _mae(y: list[float], yhat: list[float]):
-        absolute_epsilon = [np.abs(y[i] - yhat[i]) for i in range(len(yhat))]
-        return sum(absolute_epsilon) / len(absolute_epsilon)
-
     def _linear_regression(self, coeffs: tuple[int, int]):
         alpha = coeffs[0]
         beta = coeffs[1]
         weighted_data = [alpha + (beta * i) for i in self.x_data]
-        return self._mae(self.y_data, weighted_data)
+        return utils.mae(self.y_data, weighted_data)
 
     def fit(self, starting_value: tuple[int] = (1, 1)):
         fitted_model = minimize(
@@ -43,10 +38,10 @@ class LinearRegression:
 
 
 if __name__ == "__main__":
-    ar = LinearRegression(
+    lr = LinearRegression(
         x_data=[1, 2, 3, 4, 5, 6, 7, 8, 9], y_data=[2, 4, 6, 8, 10, 12, 14, 16, 18]
     )
-    ar.fit()
+    lr.fit()
 
-    print(ar.model)
-    print(ar.predict([11, 12, 13]))
+    print(lr.model)
+    print(lr.predict([11, 12, 13]))
