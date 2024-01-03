@@ -1,5 +1,5 @@
 #!/usr/bin/env just --justfile
-export PYTHON_VERSION := "3.11"
+export PYTHON_VERSION := "3.12"
 
 # Virtual environment
 install-venv:
