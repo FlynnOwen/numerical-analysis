@@ -25,6 +25,8 @@ class Dataset:
 
     x_data: list[float]
     y_data: list[float]
+    model: None = None
+    coeff: None = None
 
     @staticmethod
     def _uniform_split(data: list[float], n_segments: int):
@@ -97,31 +99,37 @@ class SegmentedDataset(Dataset):
 class PiecewiseLinearRegression:
     def __init__(self, data: list[SegmentedDataset]):
         self.data: list[SegmentedDataset] = data
-        self.fitted_segments: list[LinearRegression] = []
 
     def fit(self) -> None:
         """
         Fit a Linear Regression model for each segment.
         """
-        for i in self.n_segments:
-            lr = LinearRegression(
-                x_data=self._x_data_segmented[i], y_data=self._y_data_segmented[i]
-            )
+        for dataset in self.data:
+            lr = LinearRegression(x_data=dataset.x_data, y_data=dataset.y_data)
             lr.fit()
-            self.fitted_segments.append(lr)
+            dataset.model = lr.model
+            dataset.coeff = lr.coeff
 
-    def _predict_single(self, x_observed: float):
+    def _predict_single(self, x_single: float):
         """
-        Iterate through bactched x data and find which
+        Iterate through segmented x data and find which
         segment this value belongs within.
         """
-        if x_observed < min(self.x_data):
-            pass
+        i = 0
+        while True:
+            if (
+                x_single >= self.data[i].lower_bound
+                and x_single < self.data[i].upper_bound
+            ):
+                alpha = self.data[i].coeff[0]
+                beta = self.data[i].coeff[1]
 
-    def predict(self, x_observed: list[float]):
-        alpha = self.coeff[0]
-        beta = self.coeff[1]
-        return [alpha + (i * beta) for i in x_observed]
+                return alpha + (x_single * beta)
+            else:
+                i += 1
+
+    def predict(self, x_list: list[float]):
+        return [self._predict_single(x_single=x_single) for x_single in x_list]
 
 
 if __name__ == "__main__":
@@ -132,3 +140,6 @@ if __name__ == "__main__":
     segmented_data = pwlr_data.create_segments(n_segments=3)
     print(segmented_data)
     pwlr = PiecewiseLinearRegression(segmented_data)
+    pwlr.fit()
+    print(pwlr._predict_single(3))
+    print(pwlr.predict([1, 2, 3]))
