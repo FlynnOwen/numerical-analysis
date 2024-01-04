@@ -2,6 +2,8 @@
 Nonlinear regression in the form
  of a numerical optimization function.
 
+https://bookdown.org/tpinto_home/Beyond-Linearity/piecewise-regression-and-splines.html
+
  This includes:
  - Piecewise constant
  - Piecewise linear
@@ -36,10 +38,9 @@ class Dataset:
         """
         return (
             [-np.inf]
-            + [
-                min(data) + ((max(data) - min(data)) / (i + 1))
-                for i in reversed(range(1, n_segments))
-            ]
+            + list(np.linspace(start=min(data),
+                               stop=max(data),
+                               num=n_segments+1))[1:-1]
             + [np.inf]
         )
 
