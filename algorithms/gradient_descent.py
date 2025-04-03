@@ -2,6 +2,13 @@ from typing import Callable
 from dataclasses import dataclass
 from math import sqrt
 
+# TODO:
+# - Add restarts
+# - Add momentum?
+# - Add learning rate schedule?
+# - Incorporate stochastic gradient descent?
+# - Include Adaptive Learning Rates? (Adam)
+# - Include second order (Newton's) method?
 
 @dataclass
 class Result:
